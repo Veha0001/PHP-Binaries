@@ -3,10 +3,6 @@ name: Build and Publish PHP Binaries for Android
 on:
   workflow_dispatch:
     inputs:
-      pm-version:
-        description: 'PocketMine-MP version'
-        required: true
-        type: string
       benches:
         description: 'Benches string for checking out a specific tag'
         required: true
@@ -18,8 +14,12 @@ on:
 
 jobs:
   build-android:
-    name: Build PHP for Android-PM${{ inputs.pm-version }}
+    name: Build PHP for Android
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pm-version: [4, 5] # Builds for PM version 4 and 5
+
     env:
       MUSL_DAT: https://github.com/ScerIO/musl-cross-make/releases/download/v1.1-dev2/aarch64-linux-musl.tar.xz
 
@@ -41,26 +41,26 @@ jobs:
           sudo tar -xJf aarch64-linux-musl.tar.xz -C /usr/local
           rm -rf aarch64-linux-musl.tar.xz
 
-      - name: Compile PHP for Android
+      - name: Compile PHP for Android (PM Version ${{ matrix.pm-version }})
         run: |
           set -ex
           trap "exit 1" ERR
-          ./compile.sh -t android-aarch64 -x -j 4 -f -g -P ${{ inputs.pm-version }}
+          ./compile.sh -t android-aarch64 -x -j 4 -f -g -P ${{ matrix.pm-version }}
 
-      - name: Create tarball
+      - name: Create tarball (PM Version ${{ matrix.pm-version }})
         run: |
-          tar -czf ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz bin
+          tar -czf ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz bin
 
-      - name: Upload tarball as an artifact
+      - name: Upload tarball as an artifact (PM Version ${{ matrix.pm-version }})
         uses: actions/upload-artifact@v4
         with:
-          name: PHP-Android-aarch64-PM${{ inputs.pm-version }}
-          path: ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz
+          name: PHP-Android-aarch64-PM${{ matrix.pm-version }}
+          path: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
 
-      - name: Publish Release
+      - name: Publish Release (PM Version ${{ matrix.pm-version }})
         if: ${{ inputs['publish-release'] }}
         uses: softprops/action-gh-release@v1
         with:
-          files: ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz
+          files: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
