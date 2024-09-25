@@ -59,10 +59,26 @@ jobs:
 
       - name: Publish Release
         if: ${{ inputs['publish-release'] }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ inputs.benches }}
-          release_name: Release ${{ inputs.benches }}
           files: ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz
+          name: PHP PM${{ inputs.pm-version }} (Build ${{ github.run_number }})  # Title for the release
+          tag: php-${{ inputs.pm-version }}-build-${{ github.run_number }}  # Tag for the release
+          body: |
+            ## PHP PM${{ inputs.pm-version }} Release
+            This release includes the compiled PHP binaries for Android with PocketMine-MP version ${{ inputs.pm-version }}.
+            - Benchmarks used: ${{ inputs.benches }}
+            
+            ## Release Notes
+            - Last updated on **$(date -u +'%Y-%m-%d at %H:%M:%S %Z')**
+            - Built by: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            ### Warnings
+            If this is not the default branch, please be aware:
+            - :warning: **WARNING!** Some plugins might not work properly on this version yet. If you encounter issues, consider downloading the [recommended release](${{ github.server_url }}/${{ github.repository }}/releases/latest) instead.
+            
+            - :white_check_mark: This version is recommended for production servers if it is the default branch.
+
+            :information_source: **Linux/MacOS users**: Please see [this page](https://doc.pmmp.io/en/rtfd/faq/installation/opcache.so.html) to fix extension loading errors. Also, check out the [PocketMine-MP Linux/MacOS installer](https://doc.pmmp.io/en/rtfd/installation/get-dot-pmmp-dot-io.html).
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
