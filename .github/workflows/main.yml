@@ -46,19 +46,22 @@ jobs:
           set -ex
           trap "exit 1" ERR
           ./compile.sh -t android-aarch64 -x -j 4 -g -P ${{ matrix.pm-version }}
+        continue-on-error: true # Continue even if one version fails
 
       - name: Create tarball (PM Version ${{ matrix.pm-version }})
+        if: success()
         run: |
           tar -czf ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz bin
 
       - name: Upload tarball as an artifact (PM Version ${{ matrix.pm-version }})
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: PHP-Android-aarch64-PM${{ matrix.pm-version }}
           path: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
 
       - name: Publish Release (PM Version ${{ matrix.pm-version }})
-        if: ${{ inputs['publish-release'] }}
+        if: success() && ${{ inputs['publish-release'] }}
         uses: softprops/action-gh-release@v1
         with:
           files: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
