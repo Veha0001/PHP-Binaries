@@ -59,11 +59,11 @@ jobs:
 
       - name: Publish Release
         if: ${{ inputs['publish-release'] }}
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz
           name: PHP PM${{ inputs.pm-version }} (Build ${{ github.run_number }})  # Title for the release
-          tag: php-${{ inputs.pm-version }}-build-${{ github.run_number }}  # Tag for the release
+          tag_name: php-${{ inputs.pm-version }}-build-${{ github.run_number }}  # Tag for the release
           body: |
             ## PHP PM${{ inputs.pm-version }} Release
             This release includes the compiled PHP binaries for Android with PocketMine-MP version ${{ inputs.pm-version }}.
