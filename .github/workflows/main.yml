@@ -1,0 +1,66 @@
+name: Build and Publish PHP Binaries for Android
+
+on:
+  workflow_dispatch:
+    inputs:
+      pm-version:
+        description: 'PocketMine-MP version'
+        required: true
+        type: string
+      benches:
+        description: 'Benches string for checking out a specific tag'
+        required: true
+        type: string
+      publish-release:
+        description: 'Publish the build as a release'
+        required: true
+        type: boolean
+
+jobs:
+  build-android:
+    name: Build PHP for Android-PM${{ inputs.pm-version }}
+    runs-on: ubuntu-latest
+    env:
+      MUSL_DAT: https://github.com/ScerIO/musl-cross-make/releases/download/v1.1-dev2/aarch64-linux-musl.tar.xz
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          repository: 'pmmp/PHP-Binaries'
+          ref: ${{ inputs.benches }}
+
+      - name: Install tools and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make autoconf automake libtool libtool-bin m4 wget libc-bin gzip bzip2 bison g++ git re2c
+
+      - name: Download MUSL toolchain
+        run: |
+          wget -q $MUSL_DAT
+          sudo tar -xJf aarch64-linux-musl.tar.xz -C /usr/local
+          rm -rf aarch64-linux-musl.tar.xz
+
+      - name: Compile PHP for Android
+        run: |
+          set -ex
+          trap "exit 1" ERR
+          ./compile.sh -t android-aarch64 -x -j 4 -f -g -P ${{ inputs.pm-version }}
+
+      - name: Create tarball
+        run: |
+          tar -czf ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz bin
+
+      - name: Upload tarball as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PHP-Android-aarch64-PM${{ inputs.pm-version }}
+          path: ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz
+
+      - name: Publish Release
+        if: ${{ inputs['publish-release'] }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
