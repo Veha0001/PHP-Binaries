@@ -70,7 +70,7 @@ jobs:
             - Benchmarks used: ${{ inputs.benches }}
             
             ## Release Notes
-            - Last updated on **$(date -u +'%Y-%m-%d at %H:%M:%S %Z')**
+            - Last updated on **${{ steps.date.outputs.date }}**
             - Built by: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             ### Warnings
