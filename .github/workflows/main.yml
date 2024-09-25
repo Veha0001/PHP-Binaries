@@ -11,6 +11,10 @@ on:
         description: 'Publish the build as a release'
         required: true
         type: boolean
+      pm-versions:
+        description: 'Comma-separated list of PM versions to build (e.g., 4,5)'
+        required: true
+        type: string
 
 jobs:
   build-android:
@@ -18,8 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pm-version: [4, 5] # Builds for PM version 4 and 5
-
+        pm-version: [${{ fromJson('["' + inputs.pm-versions + '"]') }}] # Builds based on the input version(s)
+        
     env:
       MUSL_DAT: https://github.com/ScerIO/musl-cross-make/releases/download/v1.1-dev2/aarch64-linux-musl.tar.xz
 
@@ -52,14 +56,14 @@ jobs:
         if: success()
         run: |
           tar -czf ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz bin
-
+        continue-on-error: true
       - name: Upload tarball as an artifact (PM Version ${{ matrix.pm-version }})
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: PHP-Android-aarch64-PM${{ matrix.pm-version }}
           path: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
-
+        continue-on-error: true
       - name: Publish Release (PM Version ${{ matrix.pm-version }})
         if: success() && ${{ inputs['publish-release'] }}
         uses: softprops/action-gh-release@v1
@@ -67,3 +71,4 @@ jobs:
           files: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
