@@ -56,14 +56,14 @@ jobs:
         if: success()
         run: |
           tar -czf ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz bin
-        continue-on-error: true
+
       - name: Upload tarball as an artifact (PM Version ${{ matrix.pm-version }})
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: PHP-Android-aarch64-PM${{ matrix.pm-version }}
           path: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
-        continue-on-error: true
+
       - name: Publish Release (PM Version ${{ matrix.pm-version }})
         if: success() && ${{ inputs['publish-release'] }}
         uses: softprops/action-gh-release@v1
@@ -71,4 +71,3 @@ jobs:
           files: ./PHP-Android-aarch64-PM${{ matrix.pm-version }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
