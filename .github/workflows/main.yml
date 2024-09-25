@@ -59,8 +59,10 @@ jobs:
 
       - name: Publish Release
         if: ${{ inputs['publish-release'] }}
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.benches }}
+          release_name: Release ${{ inputs.benches }}
           files: ./PHP-Android-aarch64-PM${{ inputs.pm-version }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
