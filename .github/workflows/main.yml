@@ -70,9 +70,8 @@ jobs:
             - Benchmarks used: ${{ inputs.benches }}
             
             ## Release Notes
-            - Last updated on **${{ steps.date.outputs.date }}**
             - Built by: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
+            
             ### Warnings
             If this is not the default branch, please be aware:
             - :warning: **WARNING!** Some plugins might not work properly on this version yet. If you encounter issues, consider downloading the [recommended release](${{ github.server_url }}/${{ github.repository }}/releases/latest) instead.
