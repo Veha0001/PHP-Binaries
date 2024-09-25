@@ -1,5 +1,5 @@
 # Custom PHP build scripts for PocketMine-MP
-[![Build status](https://github.com/Veha0001/php-build-scripts/actions/workflows/main.yml/badge.svg)](https://github.com/Veha0001/php-build-scripts/actions/workflows/main.yml)
+[![Build status][![Build and Publish PHP Binaries for Android](https://github.com/Veha0001/PHP-Binaries/actions/workflows/main.yml/badge.svg?event=workflow_dispatch)](https://github.com/Veha0001/PHP-Binaries/actions/workflows/main.yml)
 
 ## Looking for prebuilt binaries? Head over to [releases](https://github.com/pmmp/PHP-Binaries/releases/latest)
 
