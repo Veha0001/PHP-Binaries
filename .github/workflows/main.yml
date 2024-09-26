@@ -21,7 +21,7 @@ jobs:
     name: Build PHP for Android-PM${{ inputs.pm-version }}
     runs-on: ubuntu-latest
     env:
-      MUSL_DAT: https://github.com/ScerIO/musl-cross-make/releases/download/v1.1-dev2/aarch64-linux-musl.tar.xz
+      MUSL_DAT: https://github.com/Veha0001/musl-cross-make/releases/download/latest/musl-cross-make-toolchain.tar.xz
 
     steps:
       - name: Checkout code
@@ -38,9 +38,8 @@ jobs:
       - name: Download MUSL toolchain
         run: |
           wget -q $MUSL_DAT
-          sudo tar -xJf aarch64-linux-musl.tar.xz -C /usr/local
-          rm -rf aarch64-linux-musl.tar.xz
-
+          sudo tar -xJf musl-cross-make-toolchain.tar.xz -C /usr/local
+          rm -rf musl-cross-make-toolchain.tar.xz
       - name: Compile PHP for Android
         run: |
           set -ex
