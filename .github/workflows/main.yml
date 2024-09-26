@@ -19,7 +19,7 @@ on:
 jobs:
   build-android:
     name: Build PHP for Android-PM${{ inputs.pm-version }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       MUSL_DAT: https://github.com/Veha0001/musl-cross-make/releases/download/latest/musl-cross-make-toolchain.tar.xz
 
