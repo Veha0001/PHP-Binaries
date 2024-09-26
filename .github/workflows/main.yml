@@ -45,7 +45,7 @@ jobs:
         run: |
           set -ex
           trap "exit 1" ERR
-          ./compile.sh -t android-aarch64 -x -j 4 -g -P ${{ inputs.pm-version }}
+          ./compile.sh -t android-aarch64 -x -j4 -P${{ inputs.pm-version }}
 
       - name: Create tarball
         run: |
